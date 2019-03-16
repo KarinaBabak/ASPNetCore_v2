@@ -14,18 +14,22 @@ namespace NorthwindSystem.Persistence.Implementation
     {
         private readonly DbContext _dbContext;
 
-        public async Task<int> Add(CategoryDTOModel entity)
+        public CategoryRepository(DbContext dbContext)
         {
-            var category = Mapper.Map<CategoryDTOModel, CategoryDAOEntity>(entity);
-            var resultEntity = _dbContext.Set<CategoryDAOEntity>().Add(category);
+            _dbContext = dbContext;
+        }
+
+        public async Task<int> Add(CategoryDAOEntity entity)
+        {
+            var resultEntity = _dbContext.Set<CategoryDAOEntity>().Add(entity);
             await _dbContext.SaveChangesAsync();
 
             return resultEntity.Entity.CategoryId;
         }
 
-        public async Task Delete(CategoryDTOModel entity)
+        public async Task Delete(CategoryDAOEntity entity)
         {
-            var category = _dbContext.Set<CategoryDAOEntity>().Where(c => c.CategoryId == entity.Id).FirstOrDefault();
+            var category = _dbContext.Set<CategoryDAOEntity>().Where(c => c.CategoryId == entity.CategoryId).FirstOrDefault();
             if (category != null)
             {
                 _dbContext.Set<CategoryDAOEntity>().Remove(category);
@@ -33,24 +37,22 @@ namespace NorthwindSystem.Persistence.Implementation
             }
         }
 
-        public async Task<IEnumerable<CategoryDTOModel>> GetAll()
+        public async Task<IEnumerable<CategoryDAOEntity>> GetAll()
         {
-            var categories = await _dbContext.Set<CategoryDAOEntity>().ToListAsync();
-            return Mapper.Map<List<CategoryDAOEntity>, List<CategoryDTOModel>>(categories);
+            return await _dbContext.Set<CategoryDAOEntity>().ToListAsync();
         }
 
-        public async Task<CategoryDTOModel> GetById(int entityId)
+        public async Task<CategoryDAOEntity> GetById(int entityId)
         {
-            return await _dbContext.Set<CategoryDAOEntity>().Where(a => a.CategoryId == entityId)
-                .Select(post => Mapper.Map<CategoryDAOEntity, CategoryDTOModel>(post)).FirstOrDefaultAsync();
+            return await _dbContext.Set<CategoryDAOEntity>().Where(a => a.CategoryId == entityId).FirstOrDefaultAsync();
         }
 
-        public async Task Update(CategoryDTOModel entity)
+        public async Task Update(CategoryDAOEntity entity)
         {
-            var product = _dbContext.Set<CategoryDAOEntity>().Where(a => a.CategoryId == entity.Id).FirstOrDefault();
+            var product = _dbContext.Set<CategoryDAOEntity>().Where(a => a.CategoryId == entity.CategoryId).FirstOrDefault();
             if (product != null)
             {
-                product = Mapper.Map<CategoryDTOModel, CategoryDAOEntity>(entity);
+                product = entity;
                 await _dbContext.SaveChangesAsync();
             }
         }

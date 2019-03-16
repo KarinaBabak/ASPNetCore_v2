@@ -1,14 +1,15 @@
 ﻿using NorthwindSystem.Data.Models;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NorthwindSystem.BLL.Interface
 {
-    public interface IProductService : IService<Product>
+    public interface IProductService
     {
-        //Task<Product> GetById(int entityId);
-        //Task<int> Add(Product entity);
-        //Task Delete(Product entity);
-        //Task Update(Product entity);
-        //Task<IEnumerable<Product>> GetAll();
+        Task<int> Add(Product model);
+        Task Update(Product model);
+        Task Delete(Product model);
+        Task<Product> GetById(int modelId);
+        Task<IEnumerable<Product>> GetAll();
     }
 }

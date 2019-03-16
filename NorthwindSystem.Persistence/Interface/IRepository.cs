@@ -5,7 +5,7 @@ using NorthwindSystem.Data.Models;
 
 namespace NorthwindSystem.Persistence.Interface
 {
-    public interface IRepository<TModel> where TModel : IModel
+    public interface IRepository<TModel>
     {
         Task<int> Add(TModel entity);
         Task Delete(TModel entity);

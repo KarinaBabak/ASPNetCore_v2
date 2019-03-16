@@ -1,10 +1,11 @@
-﻿using NorthwindSystem.BLL.Interface;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using NorthwindSystem.BLL.Interface;
 using NorthwindSystem.Data.Models;
 using NorthwindSystem.Persistence.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using CategoryDAOEntity = NorthwindSystem.Data.Entities.Category;
 
 namespace NorthwindSystem.BLL.Implementation
 {
@@ -19,7 +20,8 @@ namespace NorthwindSystem.BLL.Implementation
 
         public async Task<int> Add(Category entity)
         {
-            return await _categoryRepository.Add(entity);
+            var category = Mapper.Map<Category, CategoryDAOEntity>(entity);
+            return await _categoryRepository.Add(category);
         }
 
         public async Task Delete(Category entity)
@@ -29,17 +31,20 @@ namespace NorthwindSystem.BLL.Implementation
 
         public async Task<IEnumerable<Category>> GetAll()
         {
-            return await _categoryRepository.GetAll();
+            var categories = await _categoryRepository.GetAll();
+            return Mapper.Map<IEnumerable<CategoryDAOEntity>, IEnumerable<Category>>(categories);
         }
 
         public async Task<Category> GetById(int entityId)
         {
-            return await _categoryRepository.GetById(entityId);
+            var category = await _categoryRepository.GetById(entityId);
+            return Mapper.Map<CategoryDAOEntity, Category>(category);
         }
 
         public async Task Update(Category entity)
         {
-            await _categoryRepository.GetAll();
+            var category = Mapper.Map<Category, CategoryDAOEntity>(entity);
+            await _categoryRepository.Update(category);
         }
     }
 }

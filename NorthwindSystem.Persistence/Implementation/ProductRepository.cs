@@ -15,22 +15,26 @@ namespace NorthwindSystem.Persistence.Implementation
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly NorthwindSystemContext _dbContext;
+        //private readonly NorthwindSystemContext _dbContext;
+        private readonly DbContext _dbContext;
 
-
-        public async Task<int> Add(ProductDTOModel entity)
+        public ProductRepository(DbContext dbContext)
         {
-            var product = Mapper.Map<ProductDTOModel, ProductDAOEntity>(entity);
-            var resultEntity = _dbContext.Set<ProductDAOEntity>().Add(product);
+            _dbContext = dbContext;
+        }
+
+        public async Task<int> Add(ProductDAOEntity entity)
+        {
+            var resultEntity = _dbContext.Set<ProductDAOEntity>().Add(entity);
             await _dbContext.SaveChangesAsync();
 
             return resultEntity.Entity.ProductId;
         }
 
 
-        public async Task Delete(ProductDTOModel entity)
+        public async Task Delete(ProductDAOEntity entity)
         {
-            var product = _dbContext.Set<ProductDAOEntity>().Where(c => c.ProductId == entity.Id).FirstOrDefault();
+            var product = _dbContext.Set<ProductDAOEntity>().Where(c => c.ProductId == entity.ProductId).FirstOrDefault();
             if (product != null)
             {
                 _dbContext.Set<ProductDAOEntity>().Remove(product);
@@ -38,30 +42,27 @@ namespace NorthwindSystem.Persistence.Implementation
             }
         }
 
-        public async Task<IEnumerable<ProductDTOModel>> GetAll()
+        public async Task<IEnumerable<ProductDAOEntity>> GetAll()
         {
-            var products = await _dbContext.Set<ProductDAOEntity>().ToListAsync();
-            return Mapper.Map<List<ProductDAOEntity>, List<ProductDTOModel>>(products);
+            return await _dbContext.Set<ProductDAOEntity>().ToListAsync();
         }
 
-        public async Task<ProductDTOModel> GetById(int entityId)
+        public async Task<ProductDAOEntity> GetById(int entityId)
         {
-            return await _dbContext.Set<ProductDAOEntity>().Where(a => a.ProductId == entityId)
-                .Select(product => Mapper.Map<ProductDAOEntity, ProductDTOModel>(product)).FirstOrDefaultAsync();
+            return await _dbContext.Set<ProductDAOEntity>().Where(a => a.ProductId == entityId).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<ProductDTOModel>> GetNumberItems(int number)
+        public async Task<IEnumerable<ProductDAOEntity>> GetNumberItems(int number)
         {
-            var products = await _dbContext.Set<ProductDAOEntity>().Take(number).ToListAsync();
-            return Mapper.Map<List<ProductDAOEntity>, List<ProductDTOModel>>(products);
+            return  await _dbContext.Set<ProductDAOEntity>().Take(number).ToListAsync();
         }
 
-        public async Task Update(ProductDTOModel entity)
+        public async Task Update(ProductDAOEntity entity)
         {
-            var product = _dbContext.Set<ProductDAOEntity>().Where(a => a.ProductId == entity.Id).FirstOrDefault();
+            var product = _dbContext.Set<ProductDAOEntity>().Where(a => a.ProductId == entity.ProductId).FirstOrDefault();
             if (product != null)
             {
-                product = Mapper.Map<ProductDTOModel, ProductDAOEntity>(entity);
+                product = entity;
                 await _dbContext.SaveChangesAsync();
             }
         }

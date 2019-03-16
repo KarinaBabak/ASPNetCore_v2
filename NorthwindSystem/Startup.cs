@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NorthwindSystem.BLL;
+using NorthwindSystem.BLL.Implementation;
+using NorthwindSystem.BLL.Interface;
 using NorthwindSystem.Data;
 using NorthwindSystem.Persistence;
 using NorthwindSystem.Persistence.Implementation;
@@ -52,7 +54,9 @@ namespace NorthwindSystem
                 options.UseSqlServer(Configuration.GetConnectionString("NorthwindSystemDbConnection")));
 
             services.RegisterPersistenceServices();
-            services.RegisterBLLServices();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ILocalConfiguration, Configuration>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

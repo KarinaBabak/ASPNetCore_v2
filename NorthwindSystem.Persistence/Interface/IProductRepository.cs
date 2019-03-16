@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ProductDTOModel = NorthwindSystem.Data.Models.Product;
+using ProductDAOModel = NorthwindSystem.Data.Entities.Product;
 
 namespace NorthwindSystem.Persistence.Interface
 {
-    public interface IProductRepository : IRepository<ProductDTOModel>
+    public interface IProductRepository : IRepository<ProductDAOModel>
     {
-        Task<IEnumerable<ProductDTOModel>> GetNumberItems(int number);
+        Task<IEnumerable<ProductDAOModel>> GetNumberItems(int number);
     }
 }
